@@ -59,4 +59,13 @@ public class Precinct {
     public void setAcceptedVoter(List<Citizen> acceptedVoter) {
         this.acceptedVoter = acceptedVoter;
     }
+
+    @Override
+    public String toString() {
+        return "\n" +
+                "╔═ Precinct index: " + index  + "\n" +
+                "╠═ Address: " + address + "\n" +
+                "╠═ Proportion Of Voter: " + proportionOfVoter + "\n" +
+                "╚═ Type Of Precinct: " + typeOfPrecinct + "\n";
+    }
 }

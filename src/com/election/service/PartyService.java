@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -65,8 +66,7 @@ public class PartyService {
         System.out.println("Введите ID партии, к которой нужно присвоить кандидата.");
         list.forEach(System.out::println);
         int id = Integer.parseInt(in.nextLine());
-        Stream<Party> temp = list.stream().filter(party -> party.getId() == id);
-        return (Party) temp;
+        return list.stream().filter(party -> party.getId() == id).findFirst().orElse(null);
     }
 
     public void addCandidateToParty(List<Party> partyList, List<Citizen> citizenList) {
@@ -126,7 +126,11 @@ public class PartyService {
             System.out.println("Укажите ID партии, из которой нужно взять список всех кандидатов: ");
             partyList.forEach(System.out::println);
             int idParty = Integer.parseInt(in.nextLine());
-            citizenList.stream().filter(citizen -> citizen.getParty().getId() == idParty).forEach(System.out::println);
+            citizenList
+                    .stream()
+                    .filter (citizen -> citizen.getParty() != null)
+                    .filter(citizen -> citizen.getParty().getId() == idParty)
+                    .forEach(System.out::println);
         } else {
             System.out.println("Список граждан пуст. Добавьте минимум одного гражданина!");
         }

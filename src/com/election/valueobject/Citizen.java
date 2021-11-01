@@ -1,31 +1,34 @@
 package com.election.valueobject;
 
-import java.util.Objects;
+import com.election.type.PrecinctType;
 
-public class Citizen implements Comparable<Citizen>{
+public class Citizen implements Comparable<Citizen> {
     private int id;
     private String name;
     private String passportNumber;
     private long identificationNumber;
     private int yearOfBirth;
-    private boolean ifMilitary;
-    private boolean ifOnQuarantine;
 
+    private PrecinctType citizenType;
+
+    /*private boolean ifMilitary;
+    private boolean ifOnQuarantine;*/
     // for candidate
+
     private double rating;
     private Party party;
-
     // for precinct
-    private Precinct precinct = null;
 
-    public Citizen(int id, String name, String passportNumber, long identificationNumber, int yearOfBirth, boolean ifMilitary, boolean ifOnQuarantine) {
+    private Precinct precinct = null;
+    public Citizen(int id, String name, String passportNumber, long identificationNumber, int yearOfBirth, PrecinctType citizenType) {
         this.id = id;
         this.name = name;
         this.passportNumber = passportNumber;
         this.identificationNumber = identificationNumber;
         this.yearOfBirth = yearOfBirth;
-        this.ifMilitary = ifMilitary;
-        this.ifOnQuarantine = ifOnQuarantine;
+        this.citizenType = citizenType;
+        /*this.ifMilitary = ifMilitary;
+        this.ifOnQuarantine = ifOnQuarantine;*/
     }
 
     public int getId() {
@@ -68,7 +71,15 @@ public class Citizen implements Comparable<Citizen>{
         this.yearOfBirth = yearOfBirth;
     }
 
-    public boolean isIfMilitary() {
+    public PrecinctType getCitizenType() {
+        return citizenType;
+    }
+
+    public void setCitizenType(PrecinctType citizenType) {
+        this.citizenType = citizenType;
+    }
+
+   /* public boolean isIfMilitary() {
         return ifMilitary;
     }
 
@@ -82,7 +93,7 @@ public class Citizen implements Comparable<Citizen>{
 
     public void setIfOnQuarantine(boolean ifOnQuarantine) {
         this.ifOnQuarantine = ifOnQuarantine;
-    }
+    }*/
 
     public double getRating() {
         return rating;
@@ -116,8 +127,8 @@ public class Citizen implements Comparable<Citizen>{
                 "╠═ Passport number: " + passportNumber + "\n" +
                 "╠═ Identification Number: " + identificationNumber + "\n" +
                 "╠═ Year of Birth: " + yearOfBirth + "\n" +
-                "╠═ Military: " + (ifMilitary ? "Yes" : "No") + "\n" +
-                "╚═ Is in quarantine: " + (ifOnQuarantine ? "Yes" : "No")  + "\n";
+                "╚═ Citizen type: " + citizenType + "\n";
+        //                "╚═ Is in quarantine: " + (ifOnQuarantine ? "Yes" : "No") + "\n";
     }
 
     @Override
@@ -125,7 +136,7 @@ public class Citizen implements Comparable<Citizen>{
         return Double.compare(rating, citizen.getRating());
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -136,5 +147,5 @@ public class Citizen implements Comparable<Citizen>{
     @Override
     public int hashCode() {
         return Objects.hash(id, name, passportNumber, identificationNumber, yearOfBirth, ifMilitary, ifOnQuarantine, rating);
-    }
+    }*/
 }

@@ -1,5 +1,6 @@
 package com.election.service;
 
+import com.election.type.PrecinctType;
 import com.election.valueobject.Citizen;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Scanner;
 
 public class CitizenService {
     private final Scanner in = new Scanner(System.in);
+    PrecinctType citizenType;
 
     public void addCitizenToListFromConsole(List<Citizen> citizenList) {
         try {
@@ -23,11 +25,18 @@ public class CitizenService {
             long inn = getInn();
             System.out.println("Введите год рождения гражданина: ");
             int yearOfBirth = Integer.parseInt(in.nextLine());
-            System.out.println("Является ли избиратель военным или сотрудником спецслужб: 1 - Да, 2 - Нет.");
+            System.out.println("Укажите категорию гражданина: 1 - Обычный гражданин, 2 - Военный, или работник спецслужб, 3 - Гражданин на карантине");
+            switch (Integer.parseInt(in.nextLine())) {
+                case 1 -> citizenType = PrecinctType.NORMAL;
+                case 2 -> citizenType = PrecinctType.QUARANTINE;
+                case 3 -> citizenType = PrecinctType.MILITARY;
+                default -> throw new Exception("Указанный тип не найден!");
+            }
+            /*System.out.println("Является ли избиратель военным или сотрудником спецслужб: 1 - Да, 2 - Нет.");
             boolean ifMilitary = Integer.parseInt(in.nextLine()) == 1;
             System.out.println("Находится ли избиратель на карантине: 1 - Да, 2 - Нет.");
-            boolean ifOnQuarantine = Integer.parseInt(in.nextLine()) == 1;
-            citizenList.add(new Citizen(id, name, passNumber, inn, yearOfBirth, ifMilitary, ifOnQuarantine));
+            boolean ifOnQuarantine = Integer.parseInt(in.nextLine()) == 1;*/
+            citizenList.add(new Citizen(id, name, passNumber, inn, yearOfBirth, citizenType));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.out.println();

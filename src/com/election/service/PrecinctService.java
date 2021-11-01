@@ -4,12 +4,8 @@ import com.election.type.PrecinctType;
 import com.election.valueobject.Citizen;
 import com.election.valueobject.Precinct;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PrecinctService {
 
@@ -18,7 +14,7 @@ public class PrecinctService {
     String address;
     PrecinctType typeOfPrecinct;
     List<Citizen> acceptedVoters = new ArrayList<>();
-    double proportionOfVoters;
+    double proportionOfVoters = 0.0;
 
 
     public void addPrecinct(List<Precinct> precinctList, List<Citizen> citizenList) {
@@ -29,8 +25,10 @@ public class PrecinctService {
                 throw new Exception("Введенный индекс участка не уникален!");
             }
             address = setAddress();
-            acceptedVoters = getAcceptedVoters(citizenList);
-            proportionOfVoters = getProportionOfVoters(citizenList);
+            if (citizenList.size() > 0) {
+                acceptedVoters = getAcceptedVoters(citizenList);
+                proportionOfVoters = getProportionOfVoters(citizenList);
+            }
             setTypeOfPrecinct();
             precinctList.add(new Precinct(index, address, proportionOfVoters, typeOfPrecinct, acceptedVoters));
         } catch (Exception e) {
@@ -39,13 +37,13 @@ public class PrecinctService {
         }
     }
 
-    private void setTypeOfPrecinct() {
+    private void setTypeOfPrecinct() throws Exception {
         System.out.println("Выберите тип участка: 1 - Обычный, 2 - для граждан на карантине, 3 - для военных или работников спецслужб.");
         switch (Integer.parseInt(in.nextLine())) {
             case 1 -> typeOfPrecinct = PrecinctType.NORMAL;
             case 2 -> typeOfPrecinct = PrecinctType.QUARANTINE;
             case 3 -> typeOfPrecinct = PrecinctType.MILITARY;
-            default -> System.out.println("Выберите тип от 1 до 3.");
+            default -> throw new Exception("Указанный тип не найден!");
         }
     }
 
@@ -74,52 +72,79 @@ public class PrecinctService {
         return (float) (acceptedVoters.size() * 100 / list.size());
     }
 
-    public void showAllPrecincts(List<Precinct> precinctList, List<Citizen> citizenList) {
+    public void showAllPrecincts(List<Precinct> precinctList, List<Citizen> citizenList) throws Exception {
         System.out.println("1. Показать список избирательных участков.");
         System.out.println("2. Показать закрепленных избирателей для указанного участка.");
         System.out.println("3. Добавить избирателя к указанному участку.");
         System.out.println("4. Удалить избирателя из указанного участка.");
         switch (Integer.parseInt(in.nextLine())) {
-            case 1 -> viewPrecinctList(precinctList, citizenList);
-            case 2 -> viewAcceptedCitizens(citizenList);
+            case 1 -> viewPrecinctList(precinctList);
+            case 2 -> viewAcceptedCitizens(precinctList, citizenList);
             case 3 -> addCitizenToPrecinct(precinctList, citizenList);
             case 4 -> delCitizenFromPrecinct(precinctList, citizenList);
         }
     }
 
-    private void viewPrecinctList(List<Precinct> precinctList, List<Citizen> citizenList) {
-        if (citizenList.size() > 0) {
+    private void viewPrecinctList(List<Precinct> precinctList) {
+        try {
+            if (checkIfPrecinctsIsExist(precinctList)) {
+                throw new Exception("Список участков пуст! Добавьте участок");
+            }
             precinctList.forEach(System.out::println);
-        } else {
-            System.out.println("Список граждан пуст!");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.out.println();
         }
+
     }
 
-    private void viewAcceptedCitizens(List<Citizen> citizenList) {
-        if (citizenList.size() > 0) {
+    private void viewAcceptedCitizens(List<Precinct> precinctList, List<Citizen> citizenList) throws Exception {
+        try {
+            if (checkIfCitizensIsExist(citizenList)) {
+                throw new Exception("Список граждан пуст! Добавьте гражданина.");
+            }
+            System.out.println("Укажите индекс участка: ");
+            precinctList.forEach(System.out::println);
+            int index = Integer.parseInt(in.nextLine());
             citizenList
                     .stream()
-                    .filter(citizen -> citizen.getPrecinct() != null)
+                    .filter(citizen -> citizen.getPrecinct().getIndex() == index)
                     .forEach(System.out::println);
-        } else {
-            System.out.println("Список граждан пуст!");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.out.println();
         }
     }
 
     private void addCitizenToPrecinct(List<Precinct> precinctList, List<Citizen> citizenList) {
+        try {
+            checkIfPrecinctsIsExist(precinctList);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.out.println();
+        }
         System.out.println("Укажите ID участка, который вы хотите закрепить за гражданином: ");
         precinctList.forEach(System.out::println);
         int indexOfPrecinct = Integer.parseInt(in.nextLine());
         System.out.println("Укажите ID гражданина, которого хотите закрепить за данным участком: ");
         citizenList.forEach(System.out::println);
         int idOfCitizen = Integer.parseInt(in.nextLine());
-        citizenList
-                .stream()
+        Precinct precinctById = precinctList.stream()
+                .filter(precinct -> precinct.getIndex() == indexOfPrecinct)
+                .findFirst().orElse(null);
+        citizenList.stream()
                 .filter(citizen -> citizen.getId() == idOfCitizen)
+                .filter(citizen -> citizen.getCitizenType().equals(Objects.requireNonNull(precinctById).getTypeOfPrecinct()))
                 .forEach(citizen -> citizen.setPrecinct(choosePrecinctForCitizen(precinctList, indexOfPrecinct)));
     }
 
     private void delCitizenFromPrecinct(List<Precinct> precinctList, List<Citizen> citizenList) {
+        try {
+            checkIfPrecinctsIsExist(precinctList);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.out.println();
+        }
         System.out.println("Укажите ID участка, которому нужно отвязать гражданина: ");
         precinctList.forEach(System.out::println);
         int indexOfPrecinct = Integer.parseInt(in.nextLine());
@@ -131,7 +156,14 @@ public class PrecinctService {
     }
 
     private Precinct choosePrecinctForCitizen(List<Precinct> list, int index) {
-        Stream<Precinct> temp = list.stream().filter(precinct -> precinct.getIndex() == index);
-        return (Precinct) temp;
+        return list.stream().filter(precinct -> precinct.getIndex() == index).findFirst().orElse(null);
+    }
+
+    private boolean checkIfPrecinctsIsExist(List<Precinct> precinctList) {
+        return precinctList.size() < 1;
+    }
+
+    private boolean checkIfCitizensIsExist(List<Citizen> citizenList) {
+        return citizenList.size() < 1;
     }
 }

@@ -17,12 +17,12 @@ public class Menu {
     List<Citizen> citizenList = new ArrayList<>();
     List<Party> partiesList = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Menu menu = new Menu();
         menu.run();
     }
 
-    private void run() {
+    private void run() throws Exception {
         PrecinctService precinctService = new PrecinctService();
         CitizenService citizenService = new CitizenService();
         PartyService partyService = new PartyService();

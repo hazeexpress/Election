@@ -11,13 +11,15 @@ public class Party {
     private FractionType fraction;
     private Date dateOfCreatingParty;
     private Set<Citizen> candidates = new TreeSet<>();
+    private int id;
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-    public Party(String name, FractionType fraction, Date dateOfCreatingParty) {
+    public Party(String name, FractionType fraction, Date dateOfCreatingParty, int id) {
         this.name = name;
         this.fraction = fraction;
         this.dateOfCreatingParty = dateOfCreatingParty;
+        this.id = id;
     }
 
     public String getName() {
@@ -68,10 +70,19 @@ public class Party {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "\n" +
                 "╔═ Party name: " + name  + "\n" +
+                "╠═ ID: " + id + "\n" +
                 "╠═ Fraction: " + fraction + "\n" +
                 "╚═ Date of creating: " + simpleDateFormat.format(dateOfCreatingParty) + "\n";
     }

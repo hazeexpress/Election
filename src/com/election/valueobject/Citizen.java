@@ -12,11 +12,11 @@ public class Citizen implements Comparable<Citizen>{
     private boolean ifOnQuarantine;
 
     // for candidate
-    private int rating;
+    private double rating;
     private Party party;
 
     // for precinct
-    private Precinct precinct;
+    private Precinct precinct = null;
 
     public Citizen(int id, String name, String passportNumber, long identificationNumber, int yearOfBirth, boolean ifMilitary, boolean ifOnQuarantine) {
         this.id = id;
@@ -84,11 +84,11 @@ public class Citizen implements Comparable<Citizen>{
         this.ifOnQuarantine = ifOnQuarantine;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -122,7 +122,7 @@ public class Citizen implements Comparable<Citizen>{
 
     @Override
     public int compareTo(Citizen citizen) {
-        return rating - citizen.getRating();
+        return Double.compare(rating, citizen.getRating());
     }
 
     @Override

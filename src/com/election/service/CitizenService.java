@@ -52,7 +52,11 @@ public class CitizenService {
         return inn;
     }
 
-    public boolean checkIsExistCitizenWithIdInList(int id, List<Citizen> citizens) {
+    private boolean checkIsExistCitizenWithIdInList(int id, List<Citizen> citizens) {
         return citizens.stream().anyMatch(citizen -> id == citizen.getId());
+    }
+
+    public void viewAllCitizens(List<Citizen> citizenList) {
+        citizenList.forEach(System.out::println);
     }
 }

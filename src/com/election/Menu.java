@@ -44,10 +44,10 @@ public class Menu {
                 case 1 -> precinctService.addPrecinct(precinctList, citizenList);
                 case 2 -> citizenService.addCitizenToListFromConsole(citizenList);
                 case 3 -> partyService.addPartyToList(partiesList);
-                case 4 -> System.out.println("test");
-                case 5 -> PrecinctBuilder.getPrecincts(precinctsList, voterList);
-                case 6 -> viewList(voterList);
-                case 7 -> viewList(partiesList);
+                case 4 -> partyService.addCandidateToParty(partiesList, citizenList);
+                case 5 -> precinctService.showAllPrecincts(precinctList, citizenList);
+                case 6 -> citizenService.viewAllCitizens(citizenList);
+                case 7 -> partyService.viewAllParty(partiesList, citizenList);
                 case 8 -> System.out.println("test");
                 case 9 -> System.out.println("test");
                 case 10 -> f = false;
